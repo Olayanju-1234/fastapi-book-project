@@ -1,18 +1,27 @@
-# Dockerfile example for FastAPI deployment
-FROM python:3.9
+# Use an official Python runtime as the base image
+FROM python:3.9-slim
 
-# Set working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies and nginx
+RUN apt-get update \
+    && apt-get install -y nginx \
+    && apt-get clean
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the FastAPI app files
+# Copy the application code
 COPY . .
 
-# Expose the port the app runs on
+# Expose the application and nginx port
+EXPOSE 80
 EXPOSE 8000
 
-# Start the FastAPI app using Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Copy Nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Start both the FastAPI application and Nginx server
+CMD service nginx start && uvicorn app.main:app --host 0.0.0.0 --port 8000
