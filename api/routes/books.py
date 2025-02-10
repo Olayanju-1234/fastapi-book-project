@@ -68,6 +68,6 @@ async def get_book(book_id: int):
     if not book:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            content={"detail": f"Book with ID {book_id} not found"},
+            content={"detail": f"Book not found"},
         )
     return JSONResponse(status_code=status.HTTP_200_OK, content=book.model_dump())
