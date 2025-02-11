@@ -1,30 +1,18 @@
-# Use an official Python runtime as the base image
+# Use official Python image
 FROM python:3.9-slim
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Install system dependencies and nginx
-RUN apt-get update \
-    && apt-get install -y nginx supervisor \
-    && apt-get clean
-
-# Install Python dependencies
+# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code
+# Copy application code
 COPY . .
 
-# Expose the application and nginx ports
-EXPOSE 80
+# Expose FastAPI port
 EXPOSE 8000
 
-# Copy Nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy Supervisor config (you will need to create this)
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Start the services using Supervisor
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
