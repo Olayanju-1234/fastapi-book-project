@@ -16,8 +16,8 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose ports
-EXPOSE 80  # Nginx
-EXPOSE 8000  # FastAPI
+EXPOSE 80
+EXPOSE 8000
 
 # Start Nginx and FastAPI
 CMD service nginx start && uvicorn main:app --host 0.0.0.0 --port 8000
