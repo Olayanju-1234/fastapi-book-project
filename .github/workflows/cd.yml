@@ -7,9 +7,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Deploy to Render
-      uses: render-actions/deploy@v1
-      with:
-        service-id: your-render-service-id
-        api-key: ${{ secrets.RENDER_API_KEY }}
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Trigger Deploy on Render
+        run: |
+          curl -X POST "$RENDER_DEPLOY_HOOK"
