@@ -1,14 +1,16 @@
-name: CD Pipeline
-on:
-  push:
-    branches: [main]
+name: CD
+on: [push]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Render Deploy
-        run: |
-          curl -X POST "$RENDER_DEPLOY_HOOK"
+      - uses: actions/checkout@v2
+      - name: Deploy to Server
         env:
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          ssh -i $SSH_PRIVATE_KEY azureuser@FastAPI-Server \
+          "cd /home/azureuser/fastapi-app && \
+          git pull && \
+          sudo systemctl restart fastapi"
