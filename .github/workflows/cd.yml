@@ -10,7 +10,9 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          ssh -i $SSH_PRIVATE_KEY azureuser@FastAPI-Server \
+          echo "$SSH_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          ssh -i private_key azureuser@20.185.80.28 \
           "cd /home/azureuser/fastapi-app && \
           git pull && \
           sudo systemctl restart fastapi"
